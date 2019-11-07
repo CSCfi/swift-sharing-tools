@@ -1,0 +1,6 @@
+aiohttp
+git+https://github.com/CSCfi/swift-x-account-sharing.git
+git+https://github.com/CSCfi/swift-sharing-request.git
+fire
+python-swiftclient
+keystoneauth1
