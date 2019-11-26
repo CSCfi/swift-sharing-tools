@@ -15,3 +15,16 @@ variables:
 ```
 SWIFT_SHARING_URL="http://example"; REQUIRED; The url containing the sharing related APIs.
 ```
+
+The Openstack RC file can be found from the Openstack UI, aka Horizon. It
+can be found in the following location after logging in:
+```
+Access & Security -> API Access -> Download OpenStack RC File v3
+```
+
+After the OpenStack RC File has been downloaded, it should be run with the
+following commands:
+```
+chmod u+x [OpenStack RC File]
+./[OpenStack RC File]
+```
