@@ -31,8 +31,7 @@ class Publish():
 
     async def _push_share(self, container, recipient, rights):
         """Wrap the async share_new_access function."""
-        sharing_client_url = os.environ.get("SWIFT_SHARING_URL", None) \
-            + ":9090"
+        sharing_client_url = os.environ.get("SWIFT_SHARING_URL", None)
 
         if not sharing_client_url:
             logging.log(
@@ -55,8 +54,7 @@ class Publish():
 
     async def _get_access_requests(self, container):
         """Wrap the async list_container_requests function."""
-        request_client_url = os.environ.get("SWIFT_SHARING_URL", None) \
-            + ":9091"
+        request_client_url = os.environ.get("SWIFT_REQUEST_URL", None)
         if not request_client_url:
             logging.log(
                 logging.ERROR,
