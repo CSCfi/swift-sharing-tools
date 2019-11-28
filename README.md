@@ -5,6 +5,9 @@
 
 Contains following tools:
 - swift-publish
+    + share: Share an existing container to a project
+    + publish: Upload and share a folder / files to a project
+    + publish-request: fulfill a request for a container with specified files
 
 ### Usage
 #### swift-publish
@@ -13,7 +16,8 @@ working terminal (the file containing Openstack user information for related
 project). Following additional information needs to be passed via environment
 variables:
 ```
-SWIFT_SHARING_URL="http://example"; REQUIRED; The url containing the sharing related APIs.
+SWIFT_SHARING_URL="http://example"; Required for sharing functionality.
+SWIFT_REQUEST_URL="http://example"; Required for fulfilling sharing requests.
 ```
 
 The Openstack RC file can be found from the Openstack UI, aka Horizon. It
@@ -26,5 +30,13 @@ After the OpenStack RC File has been downloaded, it should be run with the
 following commands:
 ```
 chmod u+x [OpenStack RC File]
-./[OpenStack RC File]
+. ./[OpenStack RC File]
+```
+
+Remember that the RC files are project specific, so you can't use them to
+upload from anything else besides your currently active project.
+
+Example query, for fulfilling a request for new container, with read access:
+```
+swift-publish publish-request container_name folder_name r
 ```
