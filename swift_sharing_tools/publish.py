@@ -44,13 +44,21 @@ class Publish():
         sharing_client = SwiftXAccountSharing(sharing_client_url)
 
         async with sharing_client:
-            await sharing_client.share_new_access(
-                os.environ.get("OS_PROJECT_ID", None),
-                container,
-                recipient,
-                rights,
-                self._get_address()
-            )
+            try:
+                await sharing_client.share_new_access(
+                    os.environ.get("OS_PROJECT_ID", None),
+                    container,
+                    recipient,
+                    rights,
+                    self._get_address()
+                )
+            except AttributeError:
+                logging.log(
+                    logging.ERROR,
+                    "Swift SharingAPIs environment variables "
+                    "haven't been sourced. Please source the file if it is "
+                    "available, or download a new one from the storage UI."
+                )
 
     async def _get_access_requests(self, container):
         """Wrap the async list_container_requests function."""
@@ -66,7 +74,15 @@ class Publish():
         request_client = SwiftSharingRequest(request_client_url)
 
         async with request_client:
-            return await request_client.list_container_requests(container)
+            try:
+                return await request_client.list_container_requests(container)
+            except AttributeError:
+                logging.log(
+                    logging.ERROR,
+                    "Swift SharingAPIs environment variables "
+                    "haven't been sourced. Please source the file if it is "
+                    "available, or download a new one from the storage UI."
+                )
 
     def share(self, container, recipient, *args):
         """Share an existing container."""
