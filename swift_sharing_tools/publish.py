@@ -8,6 +8,7 @@ import sys
 import logging
 import asyncio
 import time
+import typing
 
 from swift_x_account_sharing.bindings.bind import SwiftXAccountSharing
 from swift_sharing_request.bindings.bind import SwiftSharingRequest
@@ -22,14 +23,19 @@ class Publish():
     """Share and publish Openstack Swift containers."""
 
     @staticmethod
-    def _get_address():
+    def _get_address() -> str:
         """Discover the address for the object storage."""
         ret = subprocess.getoutput(["swift auth"])
         ret = ret.split("\n")[0]
         ret = ret.split("=")[1]
         return ret
 
-    async def _push_share(self, container, recipient, rights):
+    async def _push_share(
+            self,
+            container: str,
+            recipient: str,
+            rights: typing.List[str]
+    ):
         """Wrap the async share_new_access function."""
         sharing_client_url = os.environ.get("SWIFT_SHARING_URL", None)
 
@@ -60,7 +66,10 @@ class Publish():
                     "available, or download a new one from the storage UI."
                 )
 
-    async def _get_access_requests(self, container):
+    async def _get_access_requests(
+            self,
+            container: str
+    ):
         """Wrap the async list_container_requests function."""
         request_client_url = os.environ.get("SWIFT_REQUEST_URL", None)
         if not request_client_url:
@@ -84,7 +93,12 @@ class Publish():
                     "available, or download a new one from the storage UI."
                 )
 
-    def share(self, container, recipient, *args):
+    def share(
+            self,
+            container: str,
+            recipient: str,
+            *args
+    ):
         """Share an existing container."""
         print("share called")
         print(args)
@@ -131,7 +145,12 @@ class Publish():
                 rights
             ))
 
-    def publish(self, path, recipient, *args):
+    def publish(
+            self,
+            path: str,
+            recipient: str,
+            *args
+    ):
         """
         Upload and share a new container.
 
@@ -162,7 +181,12 @@ class Publish():
 
         self.share(container, recipient, *args)
 
-    def publish_request(self, container, path, *args):
+    def publish_request(
+            self,
+            container: str,
+            path: str,
+            *args
+    ):
         """
         Upload and share a new container in response to a access request.
 
