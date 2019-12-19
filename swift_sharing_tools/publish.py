@@ -154,9 +154,12 @@ class Publish():
         """
         if sys.version_info < (3, 7):
             loop = asyncio.get_event_loop()
-            loop.run_until_complete(asyncio.wait([self._get_access_requests(
-                container
-            )]))
+            recipient_info = loop.run_until_complete(
+                asyncio.gather(*[self._get_access_requests(
+                    container
+                )])
+            )
+            recipient_info = recipient_info[0]
         else:
             recipient_info = asyncio.run(self._get_access_requests(
                 container
