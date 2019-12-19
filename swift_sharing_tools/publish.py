@@ -101,11 +101,19 @@ class Publish():
         print("Running POST: %s" % command)
         subprocess.call(command)  # nosec
 
-        asyncio.run(self._push_share(
-            container,
-            [recipient],
-            rights
-        ))
+        if sys.version_info < (3, 7):
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(asyncio.wait([self._push_share(
+                container,
+                [recipient],
+                rights
+            )]))
+        else:
+            asyncio.run(self._push_share(
+                container,
+                [recipient],
+                rights
+            ))
 
     def publish(self, path, recipient, *args):
         """
@@ -144,9 +152,15 @@ class Publish():
 
         Usage: publish_request [id] [file or directory] [access (r, w)]
         """
-        recipient_info = asyncio.run(self._get_access_requests(
-            container
-        ))
+        if sys.version_info < (3, 7):
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(asyncio.wait([self._get_access_requests(
+                container
+            )]))
+        else:
+            recipient_info = asyncio.run(self._get_access_requests(
+                container
+            ))
 
         subprocess.call([  # nosec
             "swift",
