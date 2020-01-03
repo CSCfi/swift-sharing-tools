@@ -46,6 +46,7 @@ class Publish():
                 "haven't been sourced. Please source the file if it is "
                 "available, or download a new one from the storage UI."
             )
+            sys.exit(-1)
 
         sharing_client = SwiftXAccountSharing(sharing_client_url)
 
@@ -65,6 +66,7 @@ class Publish():
                     "haven't been sourced. Please source the file if it is "
                     "available, or download a new one from the storage UI."
                 )
+                sys.exit(-1)
 
     async def _get_access_requests(
             self,
@@ -79,6 +81,7 @@ class Publish():
                 "haven't been sourced. Please source the file if it is "
                 "available, or download a new one from the storage UI."
             )
+            sys.exit(-1)
 
         request_client = SwiftSharingRequest(request_client_url)
 
@@ -92,6 +95,7 @@ class Publish():
                     "haven't been sourced. Please source the file if it is "
                     "available, or download a new one from the storage UI."
                 )
+                sys.exit(-1)
 
     def share(
             self,
@@ -100,8 +104,6 @@ class Publish():
             *args
     ):
         """Share an existing container."""
-        print("share called")
-        print(args)
         tenant = os.environ.get("OS_PROJECT_ID", None)
         if not tenant:
             logging.log(
