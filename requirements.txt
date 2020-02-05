@@ -4,3 +4,4 @@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.2.0
 fire
 python-swiftclient
 keystoneauth1
+tox

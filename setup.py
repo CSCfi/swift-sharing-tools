@@ -15,12 +15,13 @@ setuptools.setup(
     install_requires=[
         "aiohttp",
         "python-swiftclient",
+        "python-keystoneclient",
         "keystoneauth1",
         "fire",
         "swift-x-account-sharing "
-        "@ git+https://github.com/CSCfi/swift-x-account-sharing.git@v0.2.0",
+        "@ git+https://github.com/CSCfi/swift-x-account-sharing.git@v0.4.0",
         "swift-sharing-request "
-        "@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.2.0",
+        "@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.4.0",
     ],
     extras_require={
         "test": ["tox", "pytest", "pytest-cov", "coverage", "flake8",

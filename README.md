@@ -18,6 +18,7 @@ variables:
 ```
 SWIFT_SHARING_URL="http://example"; Required for sharing functionality.
 SWIFT_REQUEST_URL="http://example"; Required for fulfilling sharing requests.
+SWIFT_UI_API_KEY="example_key"; Required for API access.
 ```
 
 The Openstack RC file can be found from the Openstack UI, aka Horizon. It
