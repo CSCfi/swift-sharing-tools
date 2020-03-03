@@ -178,6 +178,9 @@ class Publish():
             "swift",
             "upload",
             container,
+            "-S",
+            str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
+                               1024 * 1024 * 1024 * 5)),  # Default to 5GiB
             path
         ])
 
@@ -211,6 +214,9 @@ class Publish():
             "swift",
             "upload",
             container,
+            "-S",
+            str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
+                               1024 * 1024 * 1024 * 5)),  # Default to 5GiB
             path
         ])
 
