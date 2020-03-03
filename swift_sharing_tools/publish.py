@@ -30,6 +30,21 @@ class Publish():
         ret = ret.split("=")[1]
         return ret
 
+    @staticmethod
+    def _check_large_files(
+            path: str
+    ) -> bool:
+        """Check if folder contains large files."""
+        return len(
+            list(filter(
+                lambda x: "Permission denied" not in x,  # Filter inaccessible
+                # Get all files > 5GiB from path recursively
+                subprocess.getoutput(
+                    f"find {path} -type f -size +5G"
+                ).split("\n")
+            ))
+        ) > 0
+
     async def _push_share(
             self,
             container: str,
@@ -178,10 +193,17 @@ class Publish():
             "swift",
             "upload",
             container,
+            "-S",
+            str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
+                               1024 * 1024 * 1024 * 5)),  # Default to 5GiB
             path
         ])
 
         self.share(container, recipient, *args)
+
+        # If performed a segmented upload, also share the segments
+        if self._check_large_files(path):
+            self.share(f"{container}_segments", recipient, *args)
 
     def publish_request(
             self,
@@ -211,12 +233,19 @@ class Publish():
             "swift",
             "upload",
             container,
+            "-S",
+            str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
+                               1024 * 1024 * 1024 * 5)),  # Default to 5GiB
             path
         ])
 
         for request in recipient_info:
             if request["owner"] == os.environ.get("OS_PROJECT_ID"):
                 self.share(container, request["user"], *args)
+
+                # If performed a segmented upload, aso share the segments
+                if self._check_large_files(path):
+                    self.share(f"{container}_segments", request["user"], *args)
 
 
 def main():

@@ -2,6 +2,6 @@
 
 
 __name__ = "swift_sharing_tools"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __author__ = "CSC Developers"
 __license__ = "MIT License"
