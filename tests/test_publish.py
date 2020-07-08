@@ -2,7 +2,7 @@
 
 
 import unittest
-
+import sys
 
 import asynctest
 import fire
@@ -269,6 +269,8 @@ class PublishTestCase(asynctest.TestCase):
             self.subprocess_call_mock.assert_called_once()
             self.push_share_mock.assert_awaited_once()
 
+    @unittest.skipIf(sys.version_info < (3, 7),
+                     "python version lower than 3.7")
     def test_share_38(self):
         """Test share method (python version 3.8)."""
         with self.os_environ_get_patch, \
@@ -307,9 +309,9 @@ class PublishTestCase(asynctest.TestCase):
                 "r",
                 "w"
             )
-            self.os_environ_get_mock.assert_called_once()
+            self.os_environ_get_mock.assert_called()
             self.subprocess_call_mock.assert_called_once()
-            self.share_mock.assert_called_once()
+            self.share_mock.assert_called()
 
     def test_publish_request_36(self):
         """Test publish_request method (python 3.6)."""
@@ -324,11 +326,13 @@ class PublishTestCase(asynctest.TestCase):
                 "r",
                 "w"
             )
-            self.os_environ_get_mock.assert_called_once()
-            self.share_mock.assert_called_once()
+            self.os_environ_get_mock.assert_called()
+            self.share_mock.assert_called()
             self.subprocess_call_mock.assert_called_once()
             self.get_access_requests_mock.assert_awaited_once()
 
+    @unittest.skipIf(sys.version_info < (3, 7),
+                     "python version lower than 3.7")
     def test_publish_request_38(self):
         """Test publish_request method (python 3.8)."""
         with self.sys_version_38_patch, \
@@ -343,7 +347,7 @@ class PublishTestCase(asynctest.TestCase):
                 "w"
             )
             self.os_environ_get_mock.assert_called()
-            self.share_mock.assert_called_once()
+            self.share_mock.assert_called()
             self.subprocess_call_mock.assert_called_once()
             self.get_access_requests_mock.assert_awaited_once()
 
