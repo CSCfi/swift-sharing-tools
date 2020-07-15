@@ -1,3 +1,6 @@
+![Python style check](https://github.com/CSCfi/swift-sharing-tools/workflows/Python%20style%20check/badge.svg)
+![Python Unit Tests](https://github.com/CSCfi/swift-sharing-tools/workflows/Python%20Unit%20Tests/badge.svg)
+
 ### Swift sharing tools
 
 ### Installation
