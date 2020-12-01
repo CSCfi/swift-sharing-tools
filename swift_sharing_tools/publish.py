@@ -25,7 +25,7 @@ class Publish():
     @staticmethod
     def _get_address() -> str:
         """Discover the address for the object storage."""
-        ret = subprocess.getoutput(["swift auth"])
+        ret = subprocess.getoutput(["swift auth"])  # type: ignore
         ret = ret.split("\n")[0]
         ret = ret.split("=")[1]
         return ret
@@ -48,9 +48,9 @@ class Publish():
     async def _push_share(
             self,
             container: str,
-            recipient: str,
+            recipient: typing.List[str],
             rights: typing.List[str]
-    ):
+    ) -> None:
         """Wrap the async share_new_access function."""
         sharing_client_url = os.environ.get("SWIFT_SHARING_URL", None)
 
@@ -86,7 +86,7 @@ class Publish():
     async def _get_access_requests(
             self,
             container: str
-    ):
+    ) -> typing.List[dict]:
         """Wrap the async list_container_requests function."""
         request_client_url = os.environ.get("SWIFT_REQUEST_URL", None)
         if not request_client_url:
@@ -116,8 +116,8 @@ class Publish():
             self,
             container: str,
             recipient: str,
-            *args
-    ):
+            *args: typing.Any
+    ) -> None:
         """Share an existing container."""
         tenant = os.environ.get("OS_PROJECT_ID", None)
         if not tenant:
@@ -166,8 +166,8 @@ class Publish():
             self,
             path: str,
             recipient: str,
-            *args
-    ):
+            *args: typing.Any
+    ) -> None:
         """
         Upload and share a new container.
 
@@ -183,10 +183,10 @@ class Publish():
             sys.exit(-1)
 
         container = (
-            "shared-upload-"
-            + recipient
-            + "-"
-            + time.strftime("%Y%m%d-%H%M%S")
+            "shared-upload-" +
+            recipient +
+            "-" +
+            time.strftime("%Y%m%d-%H%M%S")
         )
 
         subprocess.call([  # nosec
@@ -209,8 +209,8 @@ class Publish():
             self,
             container: str,
             path: str,
-            *args
-    ):
+            *args: typing.Any
+    ) -> None:
         """
         Upload and share a new container in response to a access request.
 
@@ -248,7 +248,7 @@ class Publish():
                     self.share(f"{container}_segments", request["user"], *args)
 
 
-def main():
+def main() -> None:
     """Run publishing module."""
     fire.Fire(Publish)
 
