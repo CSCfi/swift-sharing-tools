@@ -253,8 +253,11 @@ class Publish():
 
 def main() -> None:
     """Run publishing module."""
-    fire.Fire(Publish)
+    try:
+        fire.Fire(Publish)
+    except Exception as e:
+        print(f"An error ocurred: {e}")
 
 
 if __name__ == "__main__":
-    fire.Fire(Publish)
+    main()
