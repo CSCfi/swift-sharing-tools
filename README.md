@@ -60,3 +60,10 @@ Example command, for sharing a file or folder to another project with read and w
 ```
 swift-publish share container_name os_project_id r w
 ```
+
+#### Large Object sizes
+
+Swift has a limit on the size of a single uploaded object; by default this is 5GB. https://docs.openstack.org/swift/latest/overview_large_objects.html but this can be circumvented via segmentation. By default the tool uses 5GB segments but this can be adjusted via an environment variable:
+Example:
+
+`export SWIFT_SHARING_UPLOAD_SEGMENT_SIZE=1073741824` for 1GB file (size is in bytes)
