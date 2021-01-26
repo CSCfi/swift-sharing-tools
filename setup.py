@@ -19,9 +19,10 @@ setuptools.setup(
         "keystoneauth1",
         "fire",
         "swift-x-account-sharing "
-        "@ git+https://github.com/CSCfi/swift-x-account-sharing.git@v0.4.0",
+        "@ git+https://github.com/CSCfi/swift-x-account-sharing.git@v0.5.9",
         "swift-sharing-request "
-        "@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.4.0",
+        "@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.4.7",
+        "certifi"
     ],
     extras_require={
         "test": ["tox", "pytest", "pytest-cov", "coverage", "flake8",
@@ -36,14 +37,11 @@ setuptools.setup(
     },
     classifiers=[
         "Development Status :: 4 - Beta",
-
         "Intended Audience :: Developers",
         "Intended Audience ::  Information Technology",
         "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
-
         "License :: OSI Approved :: MIT License",
-
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
 )

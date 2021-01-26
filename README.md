@@ -4,15 +4,21 @@
 ### Swift sharing tools
 
 ### Installation
-```pip install git+https://github.com/CSCfi/swift-sharing-tools```
+```
+pip install git+https://github.com/CSCfi/swift-sharing-tools
+# test the command has installed correctly
+# the command below should display the help message on command line
+swift-publish --help
+```
 
 Contains following tools:
 - swift-publish
-    + share: Share an existing container to a project
-    + publish: Upload and share a folder / files to a project
-    + publish-request: fulfill a request for a container with specified files
+    + `share`: Share an existing container to a project
+    + `publish`: Upload and share a folder / files to a project
+    + `publish-request`: fulfill a request for a container with specified files
 
 ### Usage
+
 #### swift-publish
 Using swift-publish requires an Openstack project file to be sourced in the
 working terminal (the file containing Openstack user information for related
@@ -40,7 +46,24 @@ chmod u+x [OpenStack RC File]
 Remember that the RC files are project specific, so you can't use them to
 upload from anything else besides your currently active project.
 
-Example query, for fulfilling a request for new container, with read access:
+Example command, for fulfilling a request for new container, with read access:
 ```
 swift-publish publish-request container_name folder_name r
 ```
+
+Example command, for uploading a file or folder to another project with read and write access (need to be separated by space):
+```
+swift-publish publish file_or_folder_name os_project_id r w
+```
+
+Example command, for sharing a file or folder to another project with read and write (need to be separated by space):
+```
+swift-publish share container_name os_project_id r w
+```
+
+#### Large Object sizes
+
+Swift has a limit on the size of a single uploaded object; by default this is 5GB. https://docs.openstack.org/swift/latest/overview_large_objects.html but this can be circumvented via segmentation. By default the tool uses 5GB segments but this can be adjusted via an environment variable:
+Example:
+
+`export SWIFT_SHARING_UPLOAD_SEGMENT_SIZE=1073741824` for 1GB file (size is in bytes)
