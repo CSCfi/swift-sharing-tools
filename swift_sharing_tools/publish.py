@@ -9,6 +9,7 @@ import logging
 import asyncio
 import time
 import typing
+from pathlib import Path
 
 from swift_x_account_sharing.bindings.bind import SwiftXAccountSharing
 from swift_sharing_request.bindings.bind import SwiftSharingRequest
@@ -35,15 +36,17 @@ class Publish():
             path: str
     ) -> bool:
         """Check if folder contains large files."""
-        return len(
-            list(filter(
-                lambda x: "Permission denied" not in x,  # Filter inaccessible
-                # Get all files > 5GiB from path recursively
-                subprocess.getoutput(
-                    f"find {path} -type f -size +5G"
-                ).split("\n")
-            ))
-        ) > 0
+        p = Path(path)
+        gb = (1024*1024*1024)
+        result = False
+        if p.is_dir():
+            _files = [i.stat().st_size
+                      for i in p.glob('**/*') if i.is_file()]
+            result = True if any(t/gb > 5 for t in _files) else False
+        elif p.is_file():
+            result = True if p.stat().st_size/gb > 5 else False
+
+        return result
 
     async def _push_share(
             self,
