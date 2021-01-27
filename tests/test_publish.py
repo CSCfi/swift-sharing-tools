@@ -6,6 +6,7 @@ import sys
 
 import asynctest
 import fire
+import os
 
 
 from swift_sharing_tools.publish import Publish, main
@@ -66,12 +67,11 @@ class PublishTestCase(asynctest.TestCase):
         """Set up relevant mocks."""
         self.inst = Publish()
 
-        self.os_environ_get_mock = unittest.mock.Mock(
-            return_value="http://example"
-        )
-        self.os_environ_get_patch = unittest.mock.patch(
-            "swift_sharing_tools.publish.os.environ.get",
-            new=self.os_environ_get_mock
+        self.os_environ_get_patch = unittest.mock.patch.dict(
+            "swift_sharing_tools.publish.os.environ",
+            {"OS_PROJECT_ID": "project_id",
+             "SWIFT_SHARING_URL": "http://example",
+             "SWIFT_REQUEST_URL": "http://example"}
         )
 
         self.get_address_mock = unittest.mock.Mock(
@@ -149,7 +149,7 @@ class PublishTestCase(asynctest.TestCase):
 
         self.get_access_requests_mock = asynctest.CoroutineMock(
             return_value=[{
-                "owner": "http://example",
+                "owner": "project_id",
                 "user": "test-user"
             }]
         )
@@ -309,7 +309,7 @@ class PublishTestCase(asynctest.TestCase):
                 "r",
                 "w"
             )
-            self.os_environ_get_mock.assert_called()
+            self.assertEqual(os.environ["OS_PROJECT_ID"], "project_id")
             self.subprocess_call_mock.assert_called_once()
             self.share_mock.assert_called()
 
@@ -326,7 +326,11 @@ class PublishTestCase(asynctest.TestCase):
                 "r",
                 "w"
             )
-            self.os_environ_get_mock.assert_called()
+            self.assertEqual(os.environ["OS_PROJECT_ID"], "project_id")
+            self.assertEqual(os.environ["SWIFT_SHARING_URL"],
+                             "http://example")
+            self.assertEqual(os.environ["SWIFT_REQUEST_URL"],
+                             "http://example")
             self.share_mock.assert_called()
             self.subprocess_call_mock.assert_called_once()
             self.get_access_requests_mock.assert_awaited_once()
@@ -346,7 +350,11 @@ class PublishTestCase(asynctest.TestCase):
                 "r",
                 "w"
             )
-            self.os_environ_get_mock.assert_called()
+            self.assertEqual(os.environ["OS_PROJECT_ID"], "project_id")
+            self.assertEqual(os.environ["SWIFT_SHARING_URL"],
+                             "http://example")
+            self.assertEqual(os.environ["SWIFT_REQUEST_URL"],
+                             "http://example")
             self.share_mock.assert_called()
             self.subprocess_call_mock.assert_called_once()
             self.get_access_requests_mock.assert_awaited_once()

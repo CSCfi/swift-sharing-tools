@@ -37,14 +37,15 @@ class Publish():
     ) -> bool:
         """Check if folder contains large files."""
         p = Path(path)
-        gb = (1024*1024*1024)
+        gb = int(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
+                                1024 * 1024 * 1024 * 5))
         result = False
         if p.is_dir():
             _files = [i.stat().st_size
                       for i in p.glob('**/*') if i.is_file()]
-            result = True if any(t/gb > 5 for t in _files) else False
+            result = True if any(t > gb for t in _files) else False
         elif p.is_file():
-            result = True if p.stat().st_size/gb > 5 else False
+            result = True if p.stat().st_size > gb else False
 
         return result
 
