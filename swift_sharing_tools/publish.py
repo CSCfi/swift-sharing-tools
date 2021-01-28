@@ -76,7 +76,7 @@ class Publish:
         async with sharing_client:
             try:
                 logging.log(logging.INFO, f"Sharing container: "
-                    f"{container} for recipient {recipient}")
+                            f"{container} for recipient {recipient}")
                 await sharing_client.share_new_access(
                     os.environ.get("OS_PROJECT_ID", None),
                     container,
@@ -212,7 +212,7 @@ class Publish:
                 container,
                 "-S",
                 str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
-                                1024 * 1024 * 1024 * 5)),  # Default to 5GiB
+                                   1024 * 1024 * 1024 * 5)),  # Default to 5GiB
                 path
             ])
         else:
@@ -254,7 +254,7 @@ class Publish:
             ))
         logging.log(logging.INFO, f"Running swift upload for container: "
                     f"{container} to upload: {path}")
-        
+
         if self._check_large_files(path):
             subprocess.call([  # nosec
                 "swift",
@@ -262,7 +262,7 @@ class Publish:
                 container,
                 "-S",
                 str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
-                                1024 * 1024 * 1024 * 5)),  # Default to 5GiB
+                                   1024 * 1024 * 1024 * 5)),  # Default to 5GiB
                 path
             ])
         else:
@@ -287,7 +287,8 @@ def main() -> None:
     try:
         fire.Fire(Publish)
     except Exception as e:
-        logging.log(logging.ERROR, f"An error ocurred{': e' if not e else ''}.")
+        logging.log(logging.ERROR,
+                    f"An error ocurred{': e' if not e else ''}.")
 
 
 if __name__ == "__main__":
