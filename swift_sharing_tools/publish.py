@@ -17,10 +17,12 @@ from swift_sharing_request.bindings.bind import SwiftSharingRequest
 import fire
 
 
-logging.basicConfig()
+logging.basicConfig(format='%(levelname)-8s %(asctime)s | %(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p',
+                    level=logging.INFO)
 
 
-class Publish():
+class Publish:
     """Share and publish Openstack Swift containers."""
 
     @staticmethod
@@ -46,7 +48,9 @@ class Publish():
             result = True if any(t > gb for t in _files) else False
         elif p.is_file():
             result = True if p.stat().st_size > gb else False
-
+        if result:
+            logging.log(logging.INFO, "Container segmentation is needed "
+                        f"into {gb/(1024 * 1024 * 1024)}GiB segments.")
         return result
 
     async def _push_share(
@@ -71,6 +75,8 @@ class Publish():
 
         async with sharing_client:
             try:
+                logging.log(logging.INFO, f"Sharing container: "
+                    f"{container} for recipient {recipient}")
                 await sharing_client.share_new_access(
                     os.environ.get("OS_PROJECT_ID", None),
                     container,
@@ -106,7 +112,9 @@ class Publish():
 
         async with request_client:
             try:
-                return await request_client.list_container_requests(container)
+                _list = await request_client.list_container_requests(container)
+                logging.log(logging.INFO, "Retrieved container requests list")
+                return _list
             except AttributeError:
                 logging.log(
                     logging.ERROR,
@@ -137,6 +145,7 @@ class Publish():
             "post",
             container
         ]
+
         rights = []
         # If read access is specified in arguments, grant read access.
         if "r" in args:
@@ -149,7 +158,8 @@ class Publish():
             command.append("--write-acl")
             command.append(recipient + ":*")
             rights.append("w")
-        print("Running POST: %s" % command)
+
+        logging.log(logging.INFO, f"Running POST: {command}")
         subprocess.call(command)  # nosec
 
         if sys.version_info < (3, 7):
@@ -192,16 +202,26 @@ class Publish():
             "-" +
             time.strftime("%Y%m%d-%H%M%S")
         )
+        logging.log(logging.INFO, f"Running swift upload for container: "
+                    f"{container} to upload: {path}")
 
-        subprocess.call([  # nosec
-            "swift",
-            "upload",
-            container,
-            "-S",
-            str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
-                               1024 * 1024 * 1024 * 5)),  # Default to 5GiB
-            path
-        ])
+        if self._check_large_files(path):
+            subprocess.call([  # nosec
+                "swift",
+                "upload",
+                container,
+                "-S",
+                str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
+                                1024 * 1024 * 1024 * 5)),  # Default to 5GiB
+                path
+            ])
+        else:
+            subprocess.call([  # nosec
+                "swift",
+                "upload",
+                container,
+                path
+            ])
 
         self.share(container, recipient, *args)
 
@@ -232,16 +252,26 @@ class Publish():
             recipient_info = asyncio.run(self._get_access_requests(
                 container
             ))
-
-        subprocess.call([  # nosec
-            "swift",
-            "upload",
-            container,
-            "-S",
-            str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
-                               1024 * 1024 * 1024 * 5)),  # Default to 5GiB
-            path
-        ])
+        logging.log(logging.INFO, f"Running swift upload for container: "
+                    f"{container} to upload: {path}")
+        
+        if self._check_large_files(path):
+            subprocess.call([  # nosec
+                "swift",
+                "upload",
+                container,
+                "-S",
+                str(os.environ.get("SWIFT_SHARING_UPLOAD_SEGMENT_SIZE",
+                                1024 * 1024 * 1024 * 5)),  # Default to 5GiB
+                path
+            ])
+        else:
+            subprocess.call([  # nosec
+                "swift",
+                "upload",
+                container,
+                path
+            ])
 
         for request in recipient_info:
             if request["owner"] == os.environ.get("OS_PROJECT_ID"):
@@ -257,7 +287,7 @@ def main() -> None:
     try:
         fire.Fire(Publish)
     except Exception as e:
-        print(f"An error ocurred: {e}")
+        logging.log(logging.ERROR, f"An error ocurred{': e' if not e else ''}.")
 
 
 if __name__ == "__main__":
