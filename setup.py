@@ -19,9 +19,9 @@ setuptools.setup(
         "keystoneauth1",
         "fire",
         "swift-x-account-sharing "
-        "@ git+https://github.com/CSCfi/swift-x-account-sharing.git@v0.5.10",
+        "@ git+https://github.com/CSCfi/swift-x-account-sharing.git@v0.5.11",
         "swift-sharing-request "
-        "@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.4.8",
+        "@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.4.9",
         "certifi"
     ],
     extras_require={
