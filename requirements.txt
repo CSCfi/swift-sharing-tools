@@ -1,7 +1,7 @@
-aiohttp
+aiohttp==3.7.4
 git+https://github.com/CSCfi/swift-x-account-sharing.git@v0.5.11
 git+https://github.com/CSCfi/swift-sharing-request.git@v0.4.9
-fire
-python-swiftclient
-keystoneauth1
-tox
+fire==0.4.0
+python-swiftclient==3.11.1
+keystoneauth1==4.3.1
+tox==3.23.0
