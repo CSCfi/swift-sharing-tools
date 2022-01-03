@@ -4,4 +4,4 @@ git+https://github.com/CSCfi/swift-sharing-request.git@v0.4.9
 fire==0.4.0
 python-swiftclient==3.13.0
 keystoneauth1==4.4.0
-tox==3.24.4
+tox==3.24.5
